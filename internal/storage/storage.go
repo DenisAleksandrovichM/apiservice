@@ -9,14 +9,15 @@ import (
 
 var data map[uint]*User
 
-var UserNotExists = errors.New("user dows not exist")
+var UserNotExists = errors.New("user does not exist")
 var UserExists = errors.New("user exists")
 
 func init() {
 	log.Println("init storage")
 	data = make(map[uint]*User)
-	u, _ := NewUser("Kirill", "123456")
-	if err := Add(u); err != nil {
+	if u, err := NewUser("Denis", "Merzlikin", 90.5, 190, 29); err != nil {
+		log.Panic(err)
+	} else if err := Add(u); err != nil {
 		log.Panic(err)
 	}
 }
@@ -29,19 +30,19 @@ func List() []*User {
 	return res
 }
 
-func Add(u *User) error {
-	if _, ok := data[u.GetId()]; ok {
-		return errors.Wrap(UserExists, strconv.FormatUint(uint64(u.GetId()), 10))
+func Add(user *User) error {
+	if _, ok := data[user.GetId()]; ok {
+		return errors.Wrap(UserExists, strconv.FormatUint(uint64(user.GetId()), 10))
 	}
-	data[u.GetId()] = u
+	data[user.GetId()] = user
 	return nil
 }
 
-func Update(u *User) error {
-	if _, ok := data[u.GetId()]; !ok {
-		return errors.Wrap(UserNotExists, strconv.FormatUint(uint64(u.GetId()), 10))
+func Update(user *User) error {
+	if _, ok := data[user.GetId()]; !ok {
+		return errors.Wrap(UserNotExists, strconv.FormatUint(uint64(user.GetId()), 10))
 	}
-	data[u.GetId()] = u
+	data[user.GetId()] = user
 	return nil
 }
 
@@ -51,4 +52,11 @@ func Delete(id uint) error {
 		return nil
 	}
 	return errors.Wrap(UserNotExists, strconv.FormatUint(uint64(id), 10))
+}
+
+func Read(id uint) (*User, error) {
+	if user, ok := data[id]; ok {
+		return user, nil
+	}
+	return nil, errors.Wrap(UserNotExists, strconv.FormatUint(uint64(id), 10))
 }

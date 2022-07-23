@@ -6,12 +6,10 @@ import (
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/pkg/errors"
-	"gitlab.ozon.dev/kshmatov/masterclass1/config"
+	"gitlab.ozon.dev/DenisAleksandrovichM/homework-1/config"
 )
 
 type CmdHandler func(string) string
-
-var UnknownCommand = errors.New("unknown command")
 
 type Commander struct {
 	bot   *tgbotapi.BotAPI

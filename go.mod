@@ -1,4 +1,4 @@
-module gitlab.ozon.dev/kshmatov/masterclass1
+module gitlab.ozon.dev/DenisAleksandrovichM/homework-1
 
 go 1.18
 
