@@ -16,6 +16,6 @@ func main() {
 	handlers.AddHandlers(cmd)
 
 	if err := cmd.Run(); err != nil {
-		log.Panic(err)
+		log.Fatal(err)
 	}
 }

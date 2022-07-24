@@ -9,7 +9,7 @@ import (
 	"gitlab.ozon.dev/DenisAleksandrovichM/homework-1/config"
 )
 
-type CmdHandler func(string) string
+type CmdHandler func(string) (string, error)
 
 type Commander struct {
 	bot   *tgbotapi.BotAPI
@@ -47,7 +47,12 @@ func (c *Commander) Run() error {
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "")
 		if cmd := update.Message.Command(); cmd != "" {
 			if f, ok := c.route[cmd]; ok {
-				msg.Text = f(update.Message.CommandArguments())
+				text, err := f(update.Message.CommandArguments())
+				if err != nil {
+					msg.Text = err.Error()
+				} else {
+					msg.Text = text
+				}
 			} else {
 				msg.Text = "Unknown command"
 			}

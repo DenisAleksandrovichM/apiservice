@@ -15,10 +15,12 @@ var UserExists = errors.New("user exists")
 func init() {
 	log.Println("init storage")
 	data = make(map[uint]*User)
-	if u, err := NewUser("Denis", "Merzlikin", 90.5, 190, 29); err != nil {
-		log.Panic(err)
-	} else if err := Add(u); err != nil {
-		log.Panic(err)
+	u, err := NewUser("Denis", "Merzlikin", 90.5, 190, 29)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err = Add(u); err != nil {
+		log.Fatal(err)
 	}
 }
 
