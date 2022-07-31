@@ -1,0 +1,113 @@
+syntax = "proto3";
+
+package ozon.dev.mc2.api;
+option go_package = "gitlab.ozon.dev/DenisAleksandrovichM/masterclass-2/pkg/api;api";
+
+import "google/api/annotations.proto";
+
+service Admin {
+  rpc UserCreate(UserCreateRequest) returns (UserCreateResponse) {
+    option (google.api.http) = {
+      post: "/v1/user"
+      body: "*"
+    };
+  }
+
+  rpc UserList(UserListRequest) returns (UserListResponse) {
+    option (google.api.http) = {
+      get: "/v1/users"
+    };
+  }
+
+  rpc UserRead(UserReadRequest) returns (UserReadResponse) {
+    option (google.api.http) = {
+      post: "/v1/users"
+      body: "*"
+    };
+  }
+
+  rpc UserUpdate(UserUpdateRequest) returns (UserUpdateResponse) {
+    option (google.api.http) = {
+      put: "/v1/user"
+      body: "*"
+    };
+  }
+
+  rpc UserDelete(UserDeleteRequest) returns (UserDeleteResponse) {
+    option (google.api.http) = {
+      delete: "/v1/user"
+      body: "*"
+    };
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// UserCreate endpoint messages
+// ---------------------------------------------------------------------------------------------------------------------
+
+message UserCreateRequest {
+  string login     = 1;
+  string firstName = 2;
+  string lastName  = 3;
+  double weight    = 4;
+  uint32 height    = 5;
+  uint32 age       = 6;
+}
+message UserCreateResponse {}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// UserRead endpoint messages
+// ---------------------------------------------------------------------------------------------------------------------
+
+message UserReadRequest {
+  string login     = 1;
+}
+message UserReadResponse {
+  string login     = 1;
+  string firstName = 2;
+  string lastName  = 3;
+  double weight    = 4;
+  uint32 height    = 5;
+  uint32 age       = 6;
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// UserList endpoint messages
+// ---------------------------------------------------------------------------------------------------------------------
+
+message UserListRequest {}
+message UserListResponse {
+  repeated User users = 1;
+
+  message User {
+    string login     = 1;
+    string firstName = 2;
+    string lastName  = 3;
+    double weight    = 4;
+    uint32 height    = 5;
+    uint32 age       = 6;
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// UserUpdate endpoint messages
+// ---------------------------------------------------------------------------------------------------------------------
+
+message UserUpdateRequest {
+  string login     = 1;
+  string firstName = 2;
+  string lastName  = 3;
+  double weight    = 4;
+  uint32 height    = 5;
+  uint32 age       = 6;
+}
+message UserUpdateResponse {}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// UserDelete endpoint messages
+// ---------------------------------------------------------------------------------------------------------------------
+
+message UserDeleteRequest {
+  string login = 1;
+}
+message UserDeleteResponse {}
