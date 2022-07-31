@@ -16,7 +16,6 @@ func main() {
 	}
 
 	client := pb.NewAdminClient(conns)
-
 	ctx := context.Background()
 
 	createUser(client, ctx, "login1", "fn1", "ln1", 55, 155, 55)

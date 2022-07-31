@@ -1,9 +1,12 @@
 package help
 
 import (
+	"github.com/pkg/errors"
 	commandPkg "gitlab.ozon.dev/DenisAleksandrovichM/masterclass-2/internal/pkg/bot/command"
 	userPkg "gitlab.ozon.dev/DenisAleksandrovichM/masterclass-2/internal/pkg/core/user"
 )
+
+var errRead = errors.New("read process error")
 
 func New(user userPkg.Interface) commandPkg.Interface {
 	return &command{
@@ -26,12 +29,12 @@ func (c *command) Description() string {
 func (c *command) Process(args string) (string, error) {
 	params, err := commandPkg.ValidateParams(args, 1)
 	if err != nil {
-		return "", err
+		return "", errors.Wrap(errRead, err.Error())
 	}
 	login := params[0]
 	user, err := c.user.Read(login)
 	if err != nil {
-		return "", err
+		return "", errors.Wrap(errRead, err.Error())
 	}
 	return c.user.String(user), nil
 }

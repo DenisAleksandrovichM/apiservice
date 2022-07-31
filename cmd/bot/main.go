@@ -56,6 +56,6 @@ func runBot(user userPkg.Interface) {
 	}
 
 	if err := bot.Run(); err != nil {
-		log.Panic(err)
+		log.Fatal(err)
 	}
 }

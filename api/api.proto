@@ -21,8 +21,7 @@ service Admin {
 
   rpc UserRead(UserReadRequest) returns (UserReadResponse) {
     option (google.api.http) = {
-      post: "/v1/users"
-      body: "*"
+      get: "/v1/user/{login}"
     };
   }
 

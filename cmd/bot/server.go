@@ -28,9 +28,7 @@ func runGRPCServer(user userPkg.Interface) {
 }
 
 func runREST() {
-	ctx := context.Background()
-
-	ctx, cancel := context.WithCancel(ctx)
+	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
 	mux := runtime.NewServeMux(

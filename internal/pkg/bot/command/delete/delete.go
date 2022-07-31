@@ -7,6 +7,8 @@ import (
 	validatePkg "gitlab.ozon.dev/DenisAleksandrovichM/masterclass-2/internal/pkg/core/user/validate"
 )
 
+var errDelete = errors.New("delete process error")
+
 func New(user userPkg.Interface) commandPkg.Interface {
 	return &command{
 		user: user,
@@ -28,15 +30,14 @@ func (c *command) Description() string {
 func (c *command) Process(args string) (string, error) {
 	params, err := commandPkg.ValidateParams(args, 1)
 	if err != nil {
-		return "", err
+		return "", errors.Wrap(errDelete, err.Error())
 	}
 	login := params[0]
 	if err := c.user.Delete(login); err != nil {
 		if errors.Is(err, validatePkg.ErrValidation) {
-			return "", errors.Wrap(commandPkg.BadArgument, err.Error())
+			return "", errors.Wrap(errDelete, err.Error())
 		}
-		return "", errors.Wrap(commandPkg.BadArgument, "internal error")
+		return "", errors.Wrap(errDelete, "internal error")
 	}
-
 	return "success", nil
 }

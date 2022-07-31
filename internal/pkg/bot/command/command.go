@@ -19,7 +19,7 @@ type Interface interface {
 func ProcessAddOrUpdate(args string, function func(user modelsPkg.User) error) (string, error) {
 	params, err := ValidateParams(args, 6)
 	if err != nil {
-		return "", err
+		return "", errors.Wrap(BadArgument, err.Error())
 	}
 	login, firstName, lastName, weightStr, heightStr, ageStr := params[0], params[1], params[2], params[3], params[4], params[5]
 	weight, err := strconv.ParseFloat(weightStr, 32)
@@ -55,7 +55,8 @@ func ProcessAddOrUpdate(args string, function func(user modelsPkg.User) error) (
 func ValidateParams(args string, numOfParams int) ([]string, error) {
 	params := strings.Split(args, " ")
 	if len(params) != numOfParams {
-		return nil, errors.Wrapf(BadArgument, "expected %d arguments. You entered %d arguments: %v", numOfParams, len(params), params)
+		return nil, errors.Wrapf(BadArgument,
+			"expected %d arguments. You entered %d arguments: %v", numOfParams, len(params), params)
 	}
 	return params, nil
 }
