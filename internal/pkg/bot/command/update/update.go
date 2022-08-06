@@ -1,9 +1,10 @@
 package add
 
 import (
+	"context"
 	"github.com/pkg/errors"
-	commandPkg "gitlab.ozon.dev/DenisAleksandrovichM/masterclass-2/internal/pkg/bot/command"
-	userPkg "gitlab.ozon.dev/DenisAleksandrovichM/masterclass-2/internal/pkg/core/user"
+	commandPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/command"
+	userPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/core/user"
 )
 
 var errUpdate = errors.New("update process error")
@@ -26,8 +27,8 @@ func (c *command) Description() string {
 	return "update user"
 }
 
-func (c *command) Process(args string) (string, error) {
-	msg, err := commandPkg.ProcessAddOrUpdate(args, c.user.Update)
+func (c *command) Process(ctx context.Context, args string) (string, error) {
+	msg, err := commandPkg.ProcessAddOrUpdate(ctx, args, c.user.Update)
 	if err != nil {
 		return "", errors.Wrap(errUpdate, err.Error())
 	}

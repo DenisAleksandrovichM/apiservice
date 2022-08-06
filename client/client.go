@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	pb "gitlab.ozon.dev/DenisAleksandrovichM/masterclass-2/pkg/api"
+	pb "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/pkg/api"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )

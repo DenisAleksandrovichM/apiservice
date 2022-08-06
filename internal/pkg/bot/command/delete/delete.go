@@ -1,10 +1,11 @@
 package add
 
 import (
+	"context"
 	"github.com/pkg/errors"
-	commandPkg "gitlab.ozon.dev/DenisAleksandrovichM/masterclass-2/internal/pkg/bot/command"
-	userPkg "gitlab.ozon.dev/DenisAleksandrovichM/masterclass-2/internal/pkg/core/user"
-	validatePkg "gitlab.ozon.dev/DenisAleksandrovichM/masterclass-2/internal/pkg/core/user/validate"
+	commandPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/command"
+	userPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/core/user"
+	validatePkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/core/user/validate"
 )
 
 var errDelete = errors.New("delete process error")
@@ -27,13 +28,13 @@ func (c *command) Description() string {
 	return "delete user by id"
 }
 
-func (c *command) Process(args string) (string, error) {
+func (c *command) Process(ctx context.Context, args string) (string, error) {
 	params, err := commandPkg.ValidateParams(args, 1)
 	if err != nil {
 		return "", errors.Wrap(errDelete, err.Error())
 	}
 	login := params[0]
-	if err := c.user.Delete(login); err != nil {
+	if err := c.user.Delete(ctx, login); err != nil {
 		if errors.Is(err, validatePkg.ErrValidation) {
 			return "", errors.Wrap(errDelete, err.Error())
 		}

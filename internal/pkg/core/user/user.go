@@ -1,25 +1,27 @@
 package user
 
 import (
+	"context"
 	"fmt"
-	cachePkg "gitlab.ozon.dev/DenisAleksandrovichM/masterclass-2/internal/pkg/core/user/cache"
-	localCachePkg "gitlab.ozon.dev/DenisAleksandrovichM/masterclass-2/internal/pkg/core/user/cache/local"
-	"gitlab.ozon.dev/DenisAleksandrovichM/masterclass-2/internal/pkg/core/user/models"
-	"gitlab.ozon.dev/DenisAleksandrovichM/masterclass-2/internal/pkg/core/user/validate"
+	"github.com/jackc/pgx/v4/pgxpool"
+	cachePkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/core/user/cache"
+	localCachePkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/core/user/cache/local"
+	"gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/core/user/models"
+	"gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/core/user/validate"
 )
 
 type Interface interface {
-	Create(user models.User) error
-	Read(login string) (models.User, error)
-	Update(user models.User) error
-	Delete(login string) error
-	List() []models.User
+	Create(ctx context.Context, user models.User) error
+	Read(ctx context.Context, login string) (models.User, error)
+	Update(ctx context.Context, user models.User) error
+	Delete(ctx context.Context, login string) error
+	List(ctx context.Context, queryParams map[string]interface{}) ([]models.User, error)
 	String(user models.User) string
 }
 
-func New() Interface {
+func New(pool *pgxpool.Pool) Interface {
 	return &core{
-		cache: localCachePkg.New(),
+		cache: localCachePkg.New(pool),
 	}
 }
 
@@ -27,19 +29,19 @@ type core struct {
 	cache cachePkg.Interface
 }
 
-func (c *core) Create(user models.User) error {
+func (c *core) Create(ctx context.Context, user models.User) error {
 	if err := validate.ValidateUser(user); err != nil {
 		return err
 	}
-	return c.cache.Add(user)
+	return c.cache.Add(ctx, user)
 }
 
-func (c *core) Read(login string) (models.User, error) {
+func (c *core) Read(ctx context.Context, login string) (models.User, error) {
 	if err := validate.ValidateLogin(login); err != nil {
 		return models.User{}, err
 	}
 
-	user, err := c.cache.Read(login)
+	user, err := c.cache.Read(ctx, login)
 	if err != nil {
 		return models.User{}, err
 	}
@@ -47,22 +49,22 @@ func (c *core) Read(login string) (models.User, error) {
 	return user, nil
 }
 
-func (c *core) Update(user models.User) error {
+func (c *core) Update(ctx context.Context, user models.User) error {
 	if err := validate.ValidateUser(user); err != nil {
 		return err
 	}
-	return c.cache.Update(user)
+	return c.cache.Update(ctx, user)
 }
 
-func (c *core) Delete(login string) error {
+func (c *core) Delete(ctx context.Context, login string) error {
 	if err := validate.ValidateLogin(login); err != nil {
 		return err
 	}
-	return c.cache.Delete(login)
+	return c.cache.Delete(ctx, login)
 }
 
-func (c *core) List() []models.User {
-	return c.cache.List()
+func (c *core) List(ctx context.Context, queryParams map[string]interface{}) ([]models.User, error) {
+	return c.cache.List(ctx, queryParams)
 }
 
 func (c *core) String(user models.User) string {

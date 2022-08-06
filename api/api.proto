@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package ozon.dev.mc2.api;
-option go_package = "gitlab.ozon.dev/DenisAleksandrovichM/masterclass-2/pkg/api;api";
+option go_package = "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/pkg/api;api";
 
 import "google/api/annotations.proto";
 
@@ -34,8 +34,7 @@ service Admin {
 
   rpc UserDelete(UserDeleteRequest) returns (UserDeleteResponse) {
     option (google.api.http) = {
-      delete: "/v1/user"
-      body: "*"
+      delete: "/v1/user/{login}"
     };
   }
 }
@@ -74,7 +73,11 @@ message UserReadResponse {
 // UserList endpoint messages
 // ---------------------------------------------------------------------------------------------------------------------
 
-message UserListRequest {}
+message UserListRequest {
+  optional uint64 offset = 1;
+  optional uint64 limit = 2;
+  optional string sortField = 3;
+}
 message UserListResponse {
   repeated User users = 1;
 

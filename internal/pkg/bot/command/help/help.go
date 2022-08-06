@@ -1,8 +1,9 @@
 package help
 
 import (
+	"context"
 	"fmt"
-	commandPkg "gitlab.ozon.dev/DenisAleksandrovichM/masterclass-2/internal/pkg/bot/command"
+	commandPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/command"
 	"strings"
 )
 
@@ -28,7 +29,7 @@ func (c *command) Description() string {
 	return "list of commands"
 }
 
-func (c *command) Process(_ string) (string, error) {
+func (c *command) Process(_ context.Context, _ string) (string, error) {
 	result := []string{
 		fmt.Sprintf("/%s - %s", c.Name(), c.Description()),
 	}

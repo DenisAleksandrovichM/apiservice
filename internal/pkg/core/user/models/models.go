@@ -1,10 +1,10 @@
 package models
 
 type User struct {
-	Login     string
-	FirstName string
-	LastName  string
-	Weight    float32
-	Height    uint
-	Age       uint
+	Login     string  `db:"login"`
+	FirstName string  `db:"first_name"`
+	LastName  string  `db:"last_name"`
+	Weight    float32 `db:"weight"`
+	Height    uint    `db:"height"`
+	Age       uint    `db:"age"`
 }

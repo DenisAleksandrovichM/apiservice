@@ -3,9 +3,9 @@ package main
 import (
 	"context"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	apiPkg "gitlab.ozon.dev/DenisAleksandrovichM/masterclass-2/internal/api"
-	userPkg "gitlab.ozon.dev/DenisAleksandrovichM/masterclass-2/internal/pkg/core/user"
-	pb "gitlab.ozon.dev/DenisAleksandrovichM/masterclass-2/pkg/api"
+	apiPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/api"
+	userPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/core/user"
+	pb "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/pkg/api"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"log"

@@ -1,17 +1,18 @@
 package bot
 
 import (
+	"context"
 	"fmt"
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/pkg/errors"
-	"gitlab.ozon.dev/DenisAleksandrovichM/masterclass-2/internal/config"
-	commandPkg "gitlab.ozon.dev/DenisAleksandrovichM/masterclass-2/internal/pkg/bot/command"
+	"gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/config"
+	commandPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/command"
 )
 
 type Interface interface {
-	Run() error
+	Run(ctx context.Context) error
 	RegisterHandler(cmd commandPkg.Interface)
 }
 
@@ -40,7 +41,7 @@ func (c *commander) RegisterHandler(cmd commandPkg.Interface) {
 	c.route[cmd.Name()] = cmd
 }
 
-func (c *commander) Run() error {
+func (c *commander) Run(ctx context.Context) error {
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 	updates := c.bot.GetUpdatesChan(u)
@@ -52,7 +53,7 @@ func (c *commander) Run() error {
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "")
 		if cmdName := update.Message.Command(); cmdName != "" {
 			if cmd, ok := c.route[cmdName]; ok {
-				text, err := cmd.Process(update.Message.CommandArguments())
+				text, err := cmd.Process(ctx, update.Message.CommandArguments())
 				if err != nil {
 					msg.Text = err.Error()
 				} else {

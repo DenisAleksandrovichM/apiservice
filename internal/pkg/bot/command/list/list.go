@@ -1,8 +1,9 @@
 package help
 
 import (
-	commandPkg "gitlab.ozon.dev/DenisAleksandrovichM/masterclass-2/internal/pkg/bot/command"
-	userPkg "gitlab.ozon.dev/DenisAleksandrovichM/masterclass-2/internal/pkg/core/user"
+	"context"
+	commandPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/command"
+	userPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/core/user"
 	"strings"
 )
 
@@ -24,8 +25,11 @@ func (c *command) Description() string {
 	return "list of users"
 }
 
-func (c *command) Process(_ string) (string, error) {
-	usersList := c.user.List()
+func (c *command) Process(ctx context.Context, _ string) (string, error) {
+	usersList, err := c.user.List(ctx, map[string]interface{}{})
+	if err != nil {
+		return "", err
+	}
 	if len(usersList) == 0 {
 		return "no users", nil
 	}

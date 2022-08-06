@@ -1,9 +1,10 @@
 package command
 
 import (
+	"context"
 	"github.com/pkg/errors"
-	modelsPkg "gitlab.ozon.dev/DenisAleksandrovichM/masterclass-2/internal/pkg/core/user/models"
-	validatePkg "gitlab.ozon.dev/DenisAleksandrovichM/masterclass-2/internal/pkg/core/user/validate"
+	modelsPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/core/user/models"
+	validatePkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/core/user/validate"
 	"strconv"
 	"strings"
 )
@@ -13,10 +14,10 @@ var BadArgument = errors.New("bad argument")
 type Interface interface {
 	Name() string
 	Description() string
-	Process(args string) (string, error)
+	Process(ctx context.Context, args string) (string, error)
 }
 
-func ProcessAddOrUpdate(args string, function func(user modelsPkg.User) error) (string, error) {
+func ProcessAddOrUpdate(ctx context.Context, args string, function func(ctx context.Context, user modelsPkg.User) error) (string, error) {
 	params, err := ValidateParams(args, 6)
 	if err != nil {
 		return "", errors.Wrap(BadArgument, err.Error())
@@ -35,14 +36,15 @@ func ProcessAddOrUpdate(args string, function func(user modelsPkg.User) error) (
 		return "", errors.Wrap(BadArgument, err.Error())
 	}
 
-	if err = function(modelsPkg.User{
-		Login:     login,
-		FirstName: firstName,
-		LastName:  lastName,
-		Weight:    float32(weight),
-		Height:    uint(height),
-		Age:       uint(age),
-	}); err != nil {
+	if err = function(ctx,
+		modelsPkg.User{
+			Login:     strings.ToLower(login),
+			FirstName: firstName,
+			LastName:  lastName,
+			Weight:    float32(weight),
+			Height:    uint(height),
+			Age:       uint(age),
+		}); err != nil {
 		if errors.Is(err, validatePkg.ErrValidation) {
 			return "", errors.Wrap(BadArgument, err.Error())
 		}
