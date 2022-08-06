@@ -41,7 +41,7 @@ func main() {
 	user := userPkg.New(pool)
 
 	go runBot(user)
-	go runREST()
+	go runREST(ctx)
 	runGRPCServer(user)
 }
 

@@ -211,7 +211,8 @@ func (c *cache) getUserByLogin(ctx context.Context, login string) (models.User, 
 
 	if users == nil {
 		return models.User{}, errors.Wrapf(errUserNotExists, "user-login: [%s]", login)
-	} else if len(users) > 1 {
+	}
+	if len(users) > 1 {
 		return models.User{}, errors.Wrapf(errManyUsers, "user-login: [%s]", login)
 	}
 
