@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/pkg/errors"
 	commandPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/command"
-	userPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/core/user"
+	userPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user"
 )
 
 var errRead = errors.New("read process error")

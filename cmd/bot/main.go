@@ -2,9 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"github.com/jackc/pgx/v4/pgxpool"
-	configPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/config"
 	botPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot"
 	cmdAddPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/command/add"
 	cmdDeletePkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/command/delete"
@@ -12,7 +9,7 @@ import (
 	cmdListPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/command/list"
 	cmdReadPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/command/read"
 	cmdUpdatePkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/command/update"
-	userPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/core/user"
+	userPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user"
 	"log"
 )
 
@@ -20,25 +17,7 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	psqlConn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-		configPkg.Host, configPkg.Port, configPkg.User, configPkg.Password, configPkg.DBname)
-	pool, err := pgxpool.Connect(ctx, psqlConn)
-	if err != nil {
-		log.Fatal("can't connect to database", err)
-	}
-	defer pool.Close()
-
-	if err := pool.Ping(ctx); err != nil {
-		log.Fatal("ping database error", err)
-	}
-
-	config := pool.Config()
-	config.MaxConnIdleTime = configPkg.MaxConnIdleTime
-	config.MaxConnLifetime = configPkg.MaxConnLifetime
-	config.MinConns = configPkg.MinConns
-	config.MaxConns = configPkg.MaxConns
-
-	user := userPkg.New(pool)
+	user := userPkg.New()
 
 	go runBot(user)
 	go runREST(ctx)

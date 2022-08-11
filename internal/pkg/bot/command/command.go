@@ -3,8 +3,8 @@ package command
 import (
 	"context"
 	"github.com/pkg/errors"
-	modelsPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/core/user/models"
-	validatePkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/core/user/validate"
+	modelsPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/models"
+	validatePkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/validate"
 	"strconv"
 	"strings"
 )

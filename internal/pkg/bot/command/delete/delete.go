@@ -4,8 +4,8 @@ import (
 	"context"
 	"github.com/pkg/errors"
 	commandPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/command"
-	userPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/core/user"
-	validatePkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/core/user/validate"
+	userPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user"
+	validatePkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/validate"
 )
 
 var errDelete = errors.New("delete process error")

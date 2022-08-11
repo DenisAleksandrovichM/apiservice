@@ -2,7 +2,7 @@ package cache
 
 import (
 	"context"
-	"gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/core/user/models"
+	"gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/models"
 )
 
 type Interface interface {

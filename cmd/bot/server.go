@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	apiPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/api"
-	userPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/core/user"
+	userPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user"
 	pb "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/pkg/api"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -13,8 +13,13 @@ import (
 	"net/http"
 )
 
+const (
+	port8081 = ":8081"
+	port8080 = ":8080"
+)
+
 func runGRPCServer(user userPkg.Interface) {
-	listener, err := net.Listen("tcp", ":8081")
+	listener, err := net.Listen("tcp", port8081)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -35,11 +40,11 @@ func runREST(ctx context.Context) {
 		runtime.WithIncomingHeaderMatcher(headerMatcherREST),
 	)
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-	if err := pb.RegisterAdminHandlerFromEndpoint(ctx, mux, ":8081", opts); err != nil {
+	if err := pb.RegisterAdminHandlerFromEndpoint(ctx, mux, port8081, opts); err != nil {
 		log.Fatal(err)
 	}
 
-	if err := http.ListenAndServe(":8080", mux); err != nil {
+	if err := http.ListenAndServe(port8080, mux); err != nil {
 		log.Fatal(err)
 	}
 }

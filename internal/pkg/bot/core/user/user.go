@@ -3,11 +3,10 @@ package user
 import (
 	"context"
 	"fmt"
-	"github.com/jackc/pgx/v4/pgxpool"
-	cachePkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/core/user/cache"
-	localCachePkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/core/user/cache/local"
-	"gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/core/user/models"
-	"gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/core/user/validate"
+	cachePkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/cache"
+	localCachePkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/cache/local"
+	"gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/models"
+	"gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/validate"
 )
 
 type Interface interface {
@@ -19,9 +18,9 @@ type Interface interface {
 	String(user models.User) string
 }
 
-func New(pool *pgxpool.Pool) Interface {
+func New() Interface {
 	return &core{
-		cache: localCachePkg.New(pool),
+		cache: localCachePkg.New(),
 	}
 }
 

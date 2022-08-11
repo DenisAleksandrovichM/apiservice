@@ -2,7 +2,7 @@ package validate
 
 import (
 	"github.com/pkg/errors"
-	"gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/core/user/models"
+	"gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/models"
 )
 
 const (
