@@ -41,7 +41,7 @@ type cache struct {
 	poolCh chan struct{}
 }
 
-func (c *cache) List(ctx context.Context, queryParams map[string]interface{}) (users []models.User, err error) {
+func (c *cache) List(ctx context.Context, queryParams map[string]interface{}) ([]models.User, error) {
 	c.poolCh <- struct{}{}
 	c.mu.RLock()
 	defer func() {
@@ -70,16 +70,17 @@ func (c *cache) List(ctx context.Context, queryParams map[string]interface{}) (u
 	if err != nil {
 		return nil, errors.Wrap(errList, err.Error())
 	}
-	for _, user := range response.Users {
-		users = append(users,
-			models.User{
-				Login:     user.GetLogin(),
-				FirstName: user.GetFirstName(),
-				LastName:  user.GetLastName(),
-				Weight:    float32(user.GetWeight()),
-				Height:    uint(user.GetHeight()),
-				Age:       uint(user.GetAge()),
-			})
+	usersLen := len(response.Users)
+	users := make([]models.User, usersLen, usersLen)
+	for i, user := range response.Users {
+		users[i] = models.User{
+			Login:     user.GetLogin(),
+			FirstName: user.GetFirstName(),
+			LastName:  user.GetLastName(),
+			Weight:    float32(user.GetWeight()),
+			Height:    uint(user.GetHeight()),
+			Age:       uint(user.GetAge()),
+		}
 	}
 
 	return users, nil
