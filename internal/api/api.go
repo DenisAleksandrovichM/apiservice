@@ -12,36 +12,43 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func New(user userPkg.Interface) pb.AdminServer {
-	return &implementation{
-		user: user,
-	}
-}
-
-type implementation struct {
+type Implementation struct {
 	pb.UnimplementedAdminServer
 	user userPkg.Interface
 }
 
-func (i *implementation) UserCreate(ctx context.Context, in *pb.UserCreateRequest) (*pb.UserCreateResponse, error) {
-	if err := i.user.Create(ctx, models.User{
+func New(user userPkg.Interface) *Implementation {
+	return &Implementation{
+		user: user,
+	}
+}
+
+func (i *Implementation) UserCreate(ctx context.Context, in *pb.UserCreateRequest) (*pb.UserCreateResponse, error) {
+	user, err := i.user.Create(ctx, models.User{
 		Login:     in.GetLogin(),
 		FirstName: in.GetFirstName(),
 		LastName:  in.GetLastName(),
 		Weight:    float32(in.GetWeight()),
 		Height:    uint(in.GetHeight()),
 		Age:       uint(in.GetAge()),
-	}); err != nil {
+	})
+	if err != nil {
 		if errors.Is(err, validate.ErrValidation) {
 			return nil, status.Error(codes.InvalidArgument, err.Error())
 		}
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &pb.UserCreateResponse{}, nil
+	return &pb.UserCreateResponse{
+		Login:     user.Login,
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+		Weight:    float64(user.Weight),
+		Height:    uint32(user.Height),
+		Age:       uint32(user.Age)}, nil
 }
 
-func (i *implementation) UserList(ctx context.Context, in *pb.UserListRequest) (*pb.UserListResponse, error) {
+func (i *Implementation) UserList(ctx context.Context, in *pb.UserListRequest) (*pb.UserListResponse, error) {
 
 	var queryParams = map[string]interface{}{}
 	if in.Offset != nil {
@@ -75,36 +82,51 @@ func (i *implementation) UserList(ctx context.Context, in *pb.UserListRequest) (
 	}, nil
 }
 
-func (i *implementation) UserUpdate(ctx context.Context, in *pb.UserUpdateRequest) (*pb.UserUpdateResponse, error) {
-	if err := i.user.Update(ctx, models.User{
+func (i *Implementation) UserUpdate(ctx context.Context, in *pb.UserUpdateRequest) (*pb.UserUpdateResponse, error) {
+	user, err := i.user.Update(ctx, models.User{
 		Login:     in.GetLogin(),
 		FirstName: in.GetFirstName(),
 		LastName:  in.GetLastName(),
 		Weight:    float32(in.GetWeight()),
 		Height:    uint(in.GetHeight()),
 		Age:       uint(in.GetAge()),
-	}); err != nil {
+	})
+	if err != nil {
 		if errors.Is(err, validate.ErrValidation) {
 			return nil, status.Error(codes.InvalidArgument, err.Error())
 		}
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &pb.UserUpdateResponse{}, nil
+	return &pb.UserUpdateResponse{
+		Login:     user.Login,
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+		Weight:    float64(user.Weight),
+		Height:    uint32(user.Height),
+		Age:       uint32(user.Age),
+	}, nil
 }
 
-func (i *implementation) UserDelete(ctx context.Context, in *pb.UserDeleteRequest) (*pb.UserDeleteResponse, error) {
-	if err := i.user.Delete(ctx, in.GetLogin()); err != nil {
+func (i *Implementation) UserDelete(ctx context.Context, in *pb.UserDeleteRequest) (*pb.UserDeleteResponse, error) {
+	user, err := i.user.Delete(ctx, in.GetLogin())
+	if err != nil {
 		if errors.Is(err, validate.ErrValidation) {
 			return nil, status.Error(codes.InvalidArgument, err.Error())
 		}
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &pb.UserDeleteResponse{}, nil
+	return &pb.UserDeleteResponse{
+		Login:     user.Login,
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+		Weight:    float64(user.Weight),
+		Height:    uint32(user.Height),
+		Age:       uint32(user.Age)}, nil
 }
 
-func (i *implementation) UserRead(ctx context.Context, in *pb.UserReadRequest) (*pb.UserReadResponse, error) {
+func (i *Implementation) UserRead(ctx context.Context, in *pb.UserReadRequest) (*pb.UserReadResponse, error) {
 	user, err := i.user.Read(ctx, in.GetLogin())
 	if err != nil {
 		if errors.Is(err, validate.ErrValidation) {

@@ -28,9 +28,9 @@ func (c *command) Description() string {
 }
 
 func (c *command) Process(ctx context.Context, args string) (string, error) {
-	msg, err := commandPkg.ProcessAddOrUpdate(ctx, args, c.user.Update)
+	user, err := commandPkg.ProcessAddOrUpdate(ctx, args, c.user.Update)
 	if err != nil {
 		return "", errors.Wrap(errUpdate, err.Error())
 	}
-	return msg, nil
+	return c.user.String(user), nil
 }

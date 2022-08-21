@@ -51,7 +51,14 @@ message UserCreateRequest {
   uint32 height    = 5;
   uint32 age       = 6;
 }
-message UserCreateResponse {}
+message UserCreateResponse {
+  string login     = 1;
+  string firstName = 2;
+  string lastName  = 3;
+  double weight    = 4;
+  uint32 height    = 5;
+  uint32 age       = 6;
+}
 
 // ---------------------------------------------------------------------------------------------------------------------
 // UserRead endpoint messages
@@ -103,7 +110,14 @@ message UserUpdateRequest {
   uint32 height    = 5;
   uint32 age       = 6;
 }
-message UserUpdateResponse {}
+message UserUpdateResponse {
+  string login     = 1;
+  string firstName = 2;
+  string lastName  = 3;
+  double weight    = 4;
+  uint32 height    = 5;
+  uint32 age       = 6;
+}
 
 // ---------------------------------------------------------------------------------------------------------------------
 // UserDelete endpoint messages
@@ -112,4 +126,11 @@ message UserUpdateResponse {}
 message UserDeleteRequest {
   string login = 1;
 }
-message UserDeleteResponse {}
+message UserDeleteResponse {
+  string login     = 1;
+  string firstName = 2;
+  string lastName  = 3;
+  double weight    = 4;
+  uint32 height    = 5;
+  uint32 age       = 6;
+}

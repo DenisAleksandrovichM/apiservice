@@ -1,3 +1,4 @@
+//go:generate mockgen -source ./command.go -destination=./mocks/command.go -package=mock_command
 package command
 
 import (
@@ -17,26 +18,25 @@ type Interface interface {
 	Process(ctx context.Context, args string) (string, error)
 }
 
-func ProcessAddOrUpdate(ctx context.Context, args string, function func(ctx context.Context, user modelsPkg.User) error) (string, error) {
+func ProcessAddOrUpdate(ctx context.Context, args string, function func(context.Context, modelsPkg.User) (modelsPkg.User, error)) (modelsPkg.User, error) {
 	params, err := ValidateParams(args, 6)
 	if err != nil {
-		return "", errors.Wrap(BadArgument, err.Error())
+		return modelsPkg.User{}, errors.Wrap(BadArgument, err.Error())
 	}
 	login, firstName, lastName, weightStr, heightStr, ageStr := params[0], params[1], params[2], params[3], params[4], params[5]
 	weight, err := strconv.ParseFloat(weightStr, 32)
 	if err != nil {
-		return "", errors.Wrap(BadArgument, err.Error())
+		return modelsPkg.User{}, errors.Wrap(BadArgument, err.Error())
 	}
 	height, err := strconv.ParseUint(heightStr, 0, 0)
 	if err != nil {
-		return "", errors.Wrap(BadArgument, err.Error())
+		return modelsPkg.User{}, errors.Wrap(BadArgument, err.Error())
 	}
 	age, err := strconv.ParseUint(ageStr, 0, 0)
 	if err != nil {
-		return "", errors.Wrap(BadArgument, err.Error())
+		return modelsPkg.User{}, errors.Wrap(BadArgument, err.Error())
 	}
-
-	if err = function(ctx,
+	user, err := function(ctx,
 		modelsPkg.User{
 			Login:     strings.ToLower(login),
 			FirstName: firstName,
@@ -44,14 +44,15 @@ func ProcessAddOrUpdate(ctx context.Context, args string, function func(ctx cont
 			Weight:    float32(weight),
 			Height:    uint(height),
 			Age:       uint(age),
-		}); err != nil {
+		})
+	if err != nil {
 		if errors.Is(err, validatePkg.ErrValidation) {
-			return "", errors.Wrap(BadArgument, err.Error())
+			return modelsPkg.User{}, errors.Wrap(BadArgument, err.Error())
 		}
-		return "", errors.Wrap(BadArgument, "internal error")
+		return modelsPkg.User{}, errors.Wrap(BadArgument, "internal error")
 	}
 
-	return "success", nil
+	return user, nil
 }
 
 func ValidateParams(args string, numOfParams int) ([]string, error) {

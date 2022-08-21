@@ -86,7 +86,7 @@ func (c *cache) List(ctx context.Context, queryParams map[string]interface{}) ([
 	return users, nil
 }
 
-func (c *cache) Add(ctx context.Context, user models.User) error {
+func (c *cache) Add(ctx context.Context, user models.User) (models.User, error) {
 	c.poolCh <- struct{}{}
 	c.mu.Lock()
 	defer func() {
@@ -96,9 +96,9 @@ func (c *cache) Add(ctx context.Context, user models.User) error {
 
 	client, err := getDatabaseClient()
 	if err != nil {
-		return errors.Wrap(errAdd, err.Error())
+		return models.User{}, errors.Wrap(errAdd, err.Error())
 	}
-	_, err = client.UserCreate(ctx, &pb.UserCreateRequest{
+	response, err := client.UserCreate(ctx, &pb.UserCreateRequest{
 		Login:     user.Login,
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
@@ -107,10 +107,18 @@ func (c *cache) Add(ctx context.Context, user models.User) error {
 		Age:       uint32(user.Age),
 	})
 	if err != nil {
-		return errors.Wrap(errAdd, err.Error())
+		return models.User{}, errors.Wrap(errAdd, err.Error())
+	}
+	responseUser := models.User{
+		Login:     response.Login,
+		FirstName: response.FirstName,
+		LastName:  response.LastName,
+		Weight:    float32(response.Weight),
+		Height:    uint(response.Height),
+		Age:       uint(response.Age),
 	}
 
-	return nil
+	return responseUser, nil
 }
 
 func (c *cache) Read(ctx context.Context, login string) (models.User, error) {
@@ -141,7 +149,7 @@ func (c *cache) Read(ctx context.Context, login string) (models.User, error) {
 	return user, nil
 }
 
-func (c *cache) Update(ctx context.Context, user models.User) error {
+func (c *cache) Update(ctx context.Context, user models.User) (models.User, error) {
 	c.poolCh <- struct{}{}
 	c.mu.Lock()
 	defer func() {
@@ -151,9 +159,9 @@ func (c *cache) Update(ctx context.Context, user models.User) error {
 
 	client, err := getDatabaseClient()
 	if err != nil {
-		return errors.Wrap(errUpdate, err.Error())
+		return models.User{}, errors.Wrap(errUpdate, err.Error())
 	}
-	_, err = client.UserUpdate(ctx,
+	response, err := client.UserUpdate(ctx,
 		&pb.UserUpdateRequest{
 			Login:     user.Login,
 			FirstName: user.FirstName,
@@ -163,13 +171,21 @@ func (c *cache) Update(ctx context.Context, user models.User) error {
 			Age:       uint32(user.Age),
 		})
 	if err != nil {
-		return errors.Wrap(errUpdate, err.Error())
+		return models.User{}, errors.Wrap(errUpdate, err.Error())
 	}
 
-	return nil
+	responseUser := models.User{
+		Login:     response.Login,
+		FirstName: response.FirstName,
+		LastName:  response.LastName,
+		Weight:    float32(response.Weight),
+		Height:    uint(response.Height),
+		Age:       uint(response.Age),
+	}
+	return responseUser, nil
 }
 
-func (c *cache) Delete(ctx context.Context, login string) error {
+func (c *cache) Delete(ctx context.Context, login string) (models.User, error) {
 	c.poolCh <- struct{}{}
 	c.mu.Lock()
 	defer func() {
@@ -179,14 +195,22 @@ func (c *cache) Delete(ctx context.Context, login string) error {
 
 	client, err := getDatabaseClient()
 	if err != nil {
-		return errors.Wrap(errDelete, err.Error())
+		return models.User{}, errors.Wrap(errDelete, err.Error())
 	}
-	_, err = client.UserDelete(ctx, &pb.UserDeleteRequest{Login: login})
+	response, err := client.UserDelete(ctx, &pb.UserDeleteRequest{Login: login})
 	if err != nil {
-		return errors.Wrap(errDelete, err.Error())
+		return models.User{}, errors.Wrap(errDelete, err.Error())
 	}
 
-	return nil
+	user := models.User{
+		Login:     response.Login,
+		FirstName: response.FirstName,
+		LastName:  response.LastName,
+		Weight:    float32(response.Weight),
+		Height:    uint(response.Height),
+		Age:       uint(response.Age),
+	}
+	return user, nil
 }
 
 func getDatabaseClient() (pb.AdminClient, error) {

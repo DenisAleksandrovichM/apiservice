@@ -1,4 +1,4 @@
-package add
+package delete
 
 import (
 	"context"
@@ -34,11 +34,12 @@ func (c *command) Process(ctx context.Context, args string) (string, error) {
 		return "", errors.Wrap(errDelete, err.Error())
 	}
 	login := params[0]
-	if err := c.user.Delete(ctx, login); err != nil {
+	user, err := c.user.Delete(ctx, login)
+	if err != nil {
 		if errors.Is(err, validatePkg.ErrValidation) {
 			return "", errors.Wrap(errDelete, err.Error())
 		}
 		return "", errors.Wrap(errDelete, "internal error")
 	}
-	return "success", nil
+	return c.user.String(user), nil
 }

@@ -85,7 +85,7 @@ func validateWeight(weight float32) error {
 
 func validateHeight(height uint) error {
 	if !isValidPropertyValue(float32(height), minHeight, maxHeight) {
-		return errors.Wrapf(ErrValidation, "field: [weight] <%d>(min %d, max %d)", height, minHeight, maxHeight)
+		return errors.Wrapf(ErrValidation, "field: [height] <%d>(min %d, max %d)", height, minHeight, maxHeight)
 	}
 	return nil
 }

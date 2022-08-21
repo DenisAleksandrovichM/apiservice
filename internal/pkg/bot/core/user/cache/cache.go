@@ -6,9 +6,9 @@ import (
 )
 
 type Interface interface {
-	Add(ctx context.Context, user models.User) error
+	Add(ctx context.Context, user models.User) (models.User, error)
 	Read(ctx context.Context, login string) (models.User, error)
-	Delete(ctx context.Context, login string) error
+	Delete(ctx context.Context, login string) (models.User, error)
 	List(ctx context.Context, queryParams map[string]interface{}) ([]models.User, error)
-	Update(ctx context.Context, user models.User) error
+	Update(ctx context.Context, user models.User) (models.User, error)
 }
