@@ -2,14 +2,16 @@ package local
 
 import (
 	"context"
+	"encoding/json"
+	"github.com/Shopify/sarama"
+	"github.com/pkg/errors"
 	cachePkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/cache"
 	"gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/models"
 	pb "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/pkg/api"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"sync"
-
-	"github.com/pkg/errors"
+	"time"
 )
 
 const (
@@ -17,7 +19,8 @@ const (
 	QuerySortField = "SortField"
 	QueryLimit     = "Limit"
 	QueryOffset    = "Offset"
-	dataBasePort   = ":9081"
+	dataBasePort   = ":9011"
+	topic          = "test_2808"
 )
 
 var (
@@ -27,6 +30,8 @@ var (
 	errDelete   = errors.New("delete error")
 	errList     = errors.New("list error")
 	errDataBase = errors.New("database error")
+	errKafka    = errors.New("kafka error")
+	brokers     = []string{"localhost:19091"}
 )
 
 func New() cachePkg.Interface {
@@ -48,6 +53,8 @@ func (c *cache) List(ctx context.Context, queryParams map[string]interface{}) ([
 		c.mu.RUnlock()
 		<-c.poolCh
 	}()
+
+	//span, ctx := opentracing.StartSpanFromContext(ctx, "operation/list")
 
 	client, err := getDatabaseClient()
 	if err != nil {
@@ -82,7 +89,6 @@ func (c *cache) List(ctx context.Context, queryParams map[string]interface{}) ([
 			Age:       uint(user.GetAge()),
 		}
 	}
-
 	return users, nil
 }
 
@@ -94,28 +100,19 @@ func (c *cache) Add(ctx context.Context, user models.User) (models.User, error) 
 		<-c.poolCh
 	}()
 
-	client, err := getDatabaseClient()
+	userJSON, err := json.Marshal(user)
 	if err != nil {
 		return models.User{}, errors.Wrap(errAdd, err.Error())
 	}
-	response, err := client.UserCreate(ctx, &pb.UserCreateRequest{
-		Login:     user.Login,
-		FirstName: user.FirstName,
-		LastName:  user.LastName,
-		Weight:    float64(user.Weight),
-		Height:    uint32(user.Height),
-		Age:       uint32(user.Age),
-	})
-	if err != nil {
+	if err = sendMessage("Create", userJSON); err != nil {
 		return models.User{}, errors.Wrap(errAdd, err.Error())
 	}
-	responseUser := models.User{
-		Login:     response.Login,
-		FirstName: response.FirstName,
-		LastName:  response.LastName,
-		Weight:    float32(response.Weight),
-		Height:    uint(response.Height),
-		Age:       uint(response.Age),
+
+	time.Sleep(time.Second * 10)
+
+	responseUser, err := getUserByLogin(ctx, user.Login)
+	if err != nil {
+		return models.User{}, errors.Wrap(errAdd, err.Error())
 	}
 
 	return responseUser, nil
@@ -128,7 +125,76 @@ func (c *cache) Read(ctx context.Context, login string) (models.User, error) {
 		c.mu.Unlock()
 		<-c.poolCh
 	}()
+	return getUserByLogin(ctx, login)
+}
 
+func (c *cache) Update(ctx context.Context, user models.User) (models.User, error) {
+	c.poolCh <- struct{}{}
+	c.mu.Lock()
+	defer func() {
+		c.mu.Unlock()
+		<-c.poolCh
+	}()
+
+	userJSON, err := json.Marshal(user)
+	if err != nil {
+		return models.User{}, errors.Wrap(errUpdate, err.Error())
+	}
+	if err = sendMessage("Update", userJSON); err != nil {
+		return models.User{}, errors.Wrap(errUpdate, err.Error())
+	}
+
+	time.Sleep(time.Second * 10)
+
+	responseUser, err := getUserByLogin(ctx, user.Login)
+	if err != nil {
+		return models.User{}, errors.Wrap(errUpdate, err.Error())
+	}
+
+	return responseUser, errors.Wrap(errUpdate, err.Error())
+}
+
+func (c *cache) Delete(_ context.Context, login string) error {
+	c.poolCh <- struct{}{}
+	c.mu.Lock()
+	defer func() {
+		c.mu.Unlock()
+		<-c.poolCh
+	}()
+	if err := sendMessage("Delete", []byte(login)); err != nil {
+		return errors.Wrap(errDelete, err.Error())
+	}
+	return nil
+}
+
+func getDatabaseClient() (pb.AdminClient, error) {
+	conn, err := grpc.Dial(dataBasePort, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		return nil, errors.Wrap(errDataBase, err.Error())
+	}
+
+	return pb.NewAdminClient(conn), nil
+}
+
+func sendMessage(key string, value []byte) error {
+	cfg := sarama.NewConfig()
+	cfg.Producer.Return.Successes = true
+	syncProducer, err := sarama.NewSyncProducer(brokers, cfg)
+	if err != nil {
+		return errors.Wrap(errKafka, err.Error())
+	}
+	_, _, err = syncProducer.SendMessage(&sarama.ProducerMessage{
+		Topic: topic,
+		Key:   sarama.StringEncoder(key),
+		Value: sarama.ByteEncoder(value),
+	})
+	if err != nil {
+		return errors.Wrap(errKafka, err.Error())
+	}
+	return nil
+}
+
+func getUserByLogin(ctx context.Context, login string) (models.User, error) {
 	client, err := getDatabaseClient()
 	if err != nil {
 		return models.User{}, errors.Wrap(errRead, err.Error())
@@ -147,77 +213,4 @@ func (c *cache) Read(ctx context.Context, login string) (models.User, error) {
 	}
 
 	return user, nil
-}
-
-func (c *cache) Update(ctx context.Context, user models.User) (models.User, error) {
-	c.poolCh <- struct{}{}
-	c.mu.Lock()
-	defer func() {
-		c.mu.Unlock()
-		<-c.poolCh
-	}()
-
-	client, err := getDatabaseClient()
-	if err != nil {
-		return models.User{}, errors.Wrap(errUpdate, err.Error())
-	}
-	response, err := client.UserUpdate(ctx,
-		&pb.UserUpdateRequest{
-			Login:     user.Login,
-			FirstName: user.FirstName,
-			LastName:  user.LastName,
-			Weight:    float64(user.Weight),
-			Height:    uint32(user.Height),
-			Age:       uint32(user.Age),
-		})
-	if err != nil {
-		return models.User{}, errors.Wrap(errUpdate, err.Error())
-	}
-
-	responseUser := models.User{
-		Login:     response.Login,
-		FirstName: response.FirstName,
-		LastName:  response.LastName,
-		Weight:    float32(response.Weight),
-		Height:    uint(response.Height),
-		Age:       uint(response.Age),
-	}
-	return responseUser, nil
-}
-
-func (c *cache) Delete(ctx context.Context, login string) (models.User, error) {
-	c.poolCh <- struct{}{}
-	c.mu.Lock()
-	defer func() {
-		c.mu.Unlock()
-		<-c.poolCh
-	}()
-
-	client, err := getDatabaseClient()
-	if err != nil {
-		return models.User{}, errors.Wrap(errDelete, err.Error())
-	}
-	response, err := client.UserDelete(ctx, &pb.UserDeleteRequest{Login: login})
-	if err != nil {
-		return models.User{}, errors.Wrap(errDelete, err.Error())
-	}
-
-	user := models.User{
-		Login:     response.Login,
-		FirstName: response.FirstName,
-		LastName:  response.LastName,
-		Weight:    float32(response.Weight),
-		Height:    uint(response.Height),
-		Age:       uint(response.Age),
-	}
-	return user, nil
-}
-
-func getDatabaseClient() (pb.AdminClient, error) {
-	conn, err := grpc.Dial(dataBasePort, grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		return nil, errors.Wrap(errDataBase, err.Error())
-	}
-
-	return pb.NewAdminClient(conn), nil
 }

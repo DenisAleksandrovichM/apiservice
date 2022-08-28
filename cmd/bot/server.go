@@ -3,19 +3,19 @@ package main
 import (
 	"context"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	log "github.com/sirupsen/logrus"
 	apiPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/api"
 	userPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user"
 	pb "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/pkg/api"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"log"
 	"net"
 	"net/http"
 )
 
 const (
-	port8081 = ":8081"
-	port8080 = ":8080"
+	port8081 = ":9081"
+	port8080 = ":9080"
 )
 
 func runGRPCServer(user userPkg.Interface) {

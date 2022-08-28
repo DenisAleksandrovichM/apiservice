@@ -1,3 +1,4 @@
+//go:generate mockgen -source ./cache.go -destination=./mocks/cache.go -package=mock_cache
 package cache
 
 import (
@@ -8,7 +9,7 @@ import (
 type Interface interface {
 	Add(ctx context.Context, user models.User) (models.User, error)
 	Read(ctx context.Context, login string) (models.User, error)
-	Delete(ctx context.Context, login string) (models.User, error)
+	Delete(ctx context.Context, login string) error
 	List(ctx context.Context, queryParams map[string]interface{}) ([]models.User, error)
 	Update(ctx context.Context, user models.User) (models.User, error)
 }

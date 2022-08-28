@@ -34,12 +34,12 @@ func (c *command) Process(ctx context.Context, args string) (string, error) {
 		return "", errors.Wrap(errDelete, err.Error())
 	}
 	login := params[0]
-	user, err := c.user.Delete(ctx, login)
+	err = c.user.Delete(ctx, login)
 	if err != nil {
 		if errors.Is(err, validatePkg.ErrValidation) {
 			return "", errors.Wrap(errDelete, err.Error())
 		}
 		return "", errors.Wrap(errDelete, "internal error")
 	}
-	return c.user.String(user), nil
+	return "request has been sent", nil
 }

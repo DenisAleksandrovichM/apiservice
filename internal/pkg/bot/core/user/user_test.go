@@ -235,17 +235,17 @@ func TestUserDelete(t *testing.T) {
 		f := userSetUp(t)
 		f.userRepo.EXPECT().Delete(f.ctx, user1.Login).Return(user1, nil)
 		// act
-		resp, err := f.service.Delete(f.ctx, user1.Login)
+		err := f.service.Delete(f.ctx, user1.Login)
 		// assert
 		require.NoError(t, err)
-		assert.Equal(t, resp, user1)
+		//assert.Equal(t, resp, user1)
 	})
 
 	t.Run("error", func(t *testing.T) {
 		// arrange
 		f := userSetUp(t)
 		// act
-		_, err := f.service.Delete(f.ctx, "")
+		err := f.service.Delete(f.ctx, "")
 		// assert
 		assert.ErrorIs(t, err, validate.ErrValidation)
 	})

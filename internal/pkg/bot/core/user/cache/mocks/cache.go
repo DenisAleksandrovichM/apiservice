@@ -51,12 +51,11 @@ func (mr *MockInterfaceMockRecorder) Add(ctx, user interface{}) *gomock.Call {
 }
 
 // Delete mocks base method.
-func (m *MockInterface) Delete(ctx context.Context, login string) (models.User, error) {
+func (m *MockInterface) Delete(ctx context.Context, login string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Delete", ctx, login)
-	ret0, _ := ret[0].(models.User)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // Delete indicates an expected call of Delete.

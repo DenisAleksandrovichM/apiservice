@@ -14,7 +14,7 @@ type Interface interface {
 	Create(ctx context.Context, user models.User) (models.User, error)
 	Read(ctx context.Context, login string) (models.User, error)
 	Update(ctx context.Context, user models.User) (models.User, error)
-	Delete(ctx context.Context, login string) (models.User, error)
+	Delete(ctx context.Context, login string) error
 	List(ctx context.Context, queryParams map[string]interface{}) ([]models.User, error)
 	String(user models.User) string
 }
@@ -50,9 +50,9 @@ func (c *core) Update(ctx context.Context, user models.User) (models.User, error
 	return c.cache.Update(ctx, user)
 }
 
-func (c *core) Delete(ctx context.Context, login string) (models.User, error) {
+func (c *core) Delete(ctx context.Context, login string) error {
 	if err := validate.ValidateLogin(login); err != nil {
-		return models.User{}, err
+		return err
 	}
 	return c.cache.Delete(ctx, login)
 }

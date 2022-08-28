@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	log "github.com/sirupsen/logrus"
 	botPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot"
 	cmdAddPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/command/add"
 	cmdDeletePkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/command/delete"
@@ -10,10 +11,11 @@ import (
 	cmdReadPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/command/read"
 	cmdUpdatePkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/command/update"
 	userPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user"
-	"log"
 )
 
 func main() {
+	log.SetLevel(log.DebugLevel)
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -57,7 +59,6 @@ func runBot(user userPkg.Interface) {
 			commandList.Name():   commandList.Description(),
 		})
 		bot.RegisterHandler(commandHelp)
-
 	}
 
 	if err := bot.Run(ctx); err != nil {

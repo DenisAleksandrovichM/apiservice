@@ -224,14 +224,7 @@ func TestUserDelete(t *testing.T) {
 		resp, err := f.service.UserDelete(f.ctx, req)
 		// assert
 		require.NoError(t, err)
-		assert.Equal(t, resp, &api.UserDeleteResponse{
-			Login:     user1.Login,
-			FirstName: user1.FirstName,
-			LastName:  user1.LastName,
-			Weight:    float64(user1.Weight),
-			Height:    uint32(user1.Height),
-			Age:       uint32(user1.Age),
-		})
+		assert.Equal(t, resp, &api.UserDeleteResponse{})
 	})
 
 	t.Run("error", func(t *testing.T) {
