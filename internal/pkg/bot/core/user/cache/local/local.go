@@ -21,6 +21,8 @@ const (
 	QueryOffset    = "Offset"
 	dataBasePort   = ":9011"
 	topic          = "test_2808"
+	eventCreate    = "Create"
+	eventUpdate    = "Update"
 )
 
 var (
@@ -53,8 +55,6 @@ func (c *cache) List(ctx context.Context, queryParams map[string]interface{}) ([
 		c.mu.RUnlock()
 		<-c.poolCh
 	}()
-
-	//span, ctx := opentracing.StartSpanFromContext(ctx, "operation/list")
 
 	client, err := getDatabaseClient()
 	if err != nil {
@@ -104,7 +104,7 @@ func (c *cache) Add(ctx context.Context, user models.User) (models.User, error) 
 	if err != nil {
 		return models.User{}, errors.Wrap(errAdd, err.Error())
 	}
-	if err = sendMessage("Create", userJSON); err != nil {
+	if err = sendMessage(eventCreate, userJSON); err != nil {
 		return models.User{}, errors.Wrap(errAdd, err.Error())
 	}
 
@@ -140,7 +140,7 @@ func (c *cache) Update(ctx context.Context, user models.User) (models.User, erro
 	if err != nil {
 		return models.User{}, errors.Wrap(errUpdate, err.Error())
 	}
-	if err = sendMessage("Update", userJSON); err != nil {
+	if err = sendMessage(eventUpdate, userJSON); err != nil {
 		return models.User{}, errors.Wrap(errUpdate, err.Error())
 	}
 

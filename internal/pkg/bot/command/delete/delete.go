@@ -10,6 +10,11 @@ import (
 
 var errDelete = errors.New("delete process error")
 
+const (
+	emptyResult   = ""
+	correctResult = "request has been sent"
+)
+
 func New(user userPkg.Interface) commandPkg.Interface {
 	return &command{
 		user: user,
@@ -31,15 +36,15 @@ func (c *command) Description() string {
 func (c *command) Process(ctx context.Context, args string) (string, error) {
 	params, err := commandPkg.ValidateParams(args, 1)
 	if err != nil {
-		return "", errors.Wrap(errDelete, err.Error())
+		return emptyResult, errors.Wrap(errDelete, err.Error())
 	}
 	login := params[0]
 	err = c.user.Delete(ctx, login)
 	if err != nil {
 		if errors.Is(err, validatePkg.ErrValidation) {
-			return "", errors.Wrap(errDelete, err.Error())
+			return emptyResult, errors.Wrap(errDelete, err.Error())
 		}
-		return "", errors.Wrap(errDelete, "internal error")
+		return emptyResult, errors.Wrap(errDelete, "internal error")
 	}
-	return "request has been sent", nil
+	return correctResult, nil
 }
