@@ -3,7 +3,7 @@ package help
 import (
 	"context"
 	"fmt"
-	commandPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/command"
+	commandPkg "github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/command"
 	"strings"
 )
 

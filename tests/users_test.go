@@ -2,9 +2,9 @@ package tests
 
 import (
 	"context"
+	modelsPkg "github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/models"
+	"github.com/DenisAleksandrovichM/homework-1/pkg/api"
 	"github.com/stretchr/testify/assert"
-	modelsPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/models"
-	"gitlab.ozon.dev/DenisAleksandrovichM/homework-1/pkg/api"
 	"testing"
 )
 

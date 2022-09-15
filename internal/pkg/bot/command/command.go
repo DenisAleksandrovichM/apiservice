@@ -3,9 +3,9 @@ package command
 
 import (
 	"context"
+	modelsPkg "github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/models"
+	validatePkg "github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/validate"
 	"github.com/pkg/errors"
-	modelsPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/models"
-	validatePkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/validate"
 	"strconv"
 	"strings"
 )

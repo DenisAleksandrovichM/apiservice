@@ -1,8 +1,8 @@
 package validate
 
 import (
+	"github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/models"
 	"github.com/pkg/errors"
-	"gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/models"
 )
 
 const (

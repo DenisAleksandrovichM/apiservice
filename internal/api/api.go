@@ -2,26 +2,25 @@ package api
 
 import (
 	"context"
+	userPkg "github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user"
+	"github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/models"
+	"github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/validate"
+	"github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/counter/errorsCounter"
+	"github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/counter/requestsCounter"
+	"github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/counter/responsesCounter"
+	pb "github.com/DenisAleksandrovichM/homework-1/pkg/api"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
-	userPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user"
-	"gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/cache/local"
-	"gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/models"
-	"gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/validate"
-	"gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/counter/errorsCounter"
-	"gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/counter/requestsCounter"
-	"gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/counter/responsesCounter"
-	pb "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/pkg/api"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
 type Implementation struct {
 	pb.UnimplementedAdminServer
-	user userPkg.Interface
+	user userPkg.User
 }
 
-func New(user userPkg.Interface) *Implementation {
+func New(user userPkg.User) *Implementation {
 	return &Implementation{
 		user: user,
 	}
@@ -61,13 +60,13 @@ func (i *Implementation) UserList(ctx context.Context, in *pb.UserListRequest) (
 	requestsCounter.Inc()
 	var queryParams = map[string]interface{}{}
 	if in.Offset != nil {
-		queryParams[local.QueryOffset] = in.GetOffset()
+		queryParams[userPkg.QueryOffset] = in.GetOffset()
 	}
 	if in.Limit != nil {
-		queryParams[local.QueryLimit] = in.GetLimit()
+		queryParams[userPkg.QueryLimit] = in.GetLimit()
 	}
 	if in.SortField != nil {
-		queryParams[local.QuerySortField] = in.GetSortField()
+		queryParams[userPkg.QuerySortField] = in.GetSortField()
 	}
 
 	users, err := i.user.List(ctx, queryParams)

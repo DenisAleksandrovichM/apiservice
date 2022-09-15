@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"log"
 
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/DenisAleksandrovichM/homework-1/internal/config"
+	commandPkg "github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/command"
+	tgbotapi "github.com/go-telegram-api-api/telegram-api-api/v5"
 	"github.com/pkg/errors"
-	"gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/config"
-	commandPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/command"
 )
 
 type Interface interface {
@@ -36,7 +36,6 @@ type commander struct {
 	route map[string]commandPkg.Interface
 }
 
-// RegisterHandler - not thread-safe
 func (c *commander) RegisterHandler(cmd commandPkg.Interface) {
 	c.route[cmd.Name()] = cmd
 }

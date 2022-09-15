@@ -1,12 +1,12 @@
 package api
 
 import (
+	modelsPkg "github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/models"
+	"github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/validate"
+	"github.com/DenisAleksandrovichM/homework-1/pkg/api"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	modelsPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/models"
-	"gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/validate"
-	"gitlab.ozon.dev/DenisAleksandrovichM/homework-1/pkg/api"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"testing"

@@ -2,8 +2,8 @@ package api
 
 import (
 	"context"
+	mockPkg "github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/mocks"
 	"github.com/golang/mock/gomock"
-	mockPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/mocks"
 	"testing"
 )
 

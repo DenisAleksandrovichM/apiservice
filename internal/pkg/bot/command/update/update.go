@@ -2,21 +2,21 @@ package add
 
 import (
 	"context"
+	commandPkg "github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/command"
+	userPkg "github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user"
 	"github.com/pkg/errors"
-	commandPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/command"
-	userPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user"
 )
 
 var errUpdate = errors.New("update process error")
 
-func New(user userPkg.Interface) commandPkg.Interface {
+func New(user userPkg.User) commandPkg.Interface {
 	return &command{
 		user: user,
 	}
 }
 
 type command struct {
-	user userPkg.Interface
+	user userPkg.User
 }
 
 func (c *command) Name() string {

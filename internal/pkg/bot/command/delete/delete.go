@@ -2,10 +2,10 @@ package delete
 
 import (
 	"context"
+	commandPkg "github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/command"
+	userPkg "github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user"
+	validatePkg "github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/validate"
 	"github.com/pkg/errors"
-	commandPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/command"
-	userPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user"
-	validatePkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/validate"
 )
 
 var errDelete = errors.New("delete process error")
@@ -15,14 +15,14 @@ const (
 	correctResult = "request has been sent"
 )
 
-func New(user userPkg.Interface) commandPkg.Interface {
+func New(user userPkg.User) commandPkg.Interface {
 	return &command{
 		user: user,
 	}
 }
 
 type command struct {
-	user userPkg.Interface
+	user userPkg.User
 }
 
 func (c *command) Name() string {

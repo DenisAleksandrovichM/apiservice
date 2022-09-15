@@ -8,8 +8,8 @@ import (
 	context "context"
 	reflect "reflect"
 
+	models "github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/models"
 	gomock "github.com/golang/mock/gomock"
-	models "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/models"
 )
 
 // MockInterface is a mock of Interface interface.

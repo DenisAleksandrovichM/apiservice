@@ -2,9 +2,9 @@ package add
 
 import (
 	"fmt"
+	modelsPkg "github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/models"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	modelsPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/models"
 	"testing"
 )
 

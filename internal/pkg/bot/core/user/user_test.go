@@ -1,11 +1,11 @@
 package user
 
 import (
+	modelsPkg "github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/models"
+	"github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/validate"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	modelsPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/models"
-	"gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/validate"
 	"testing"
 )
 
@@ -33,7 +33,7 @@ func TestUserCreate(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// arrange
 		f := userSetUp(t)
-		f.userRepo.EXPECT().Add(f.ctx, user1).Return(user1, nil)
+		f.userRepo.EXPECT().Create(f.ctx, user1).Return(user1, nil)
 		// act
 		resp, err := f.service.Create(f.ctx, user1)
 		// assert

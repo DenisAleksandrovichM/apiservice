@@ -2,9 +2,9 @@ package read
 
 import (
 	"context"
+	commandPkg "github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/command"
+	mockPkg "github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/mocks"
 	"github.com/golang/mock/gomock"
-	commandPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/command"
-	mockPkg "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user/mocks"
 	"testing"
 )
 
