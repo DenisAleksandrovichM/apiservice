@@ -1,4 +1,4 @@
-module github.com/DenisAleksandrovichM/homework-1
+module github.com/DenisAleksandrovichM/apiservice
 
 go 1.18
 

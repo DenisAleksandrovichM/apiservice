@@ -2,40 +2,40 @@ package main
 
 import (
 	"context"
-	botPkg "github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot"
-	cmdAddPkg "github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/command/add"
-	cmdDeletePkg "github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/command/delete"
-	cmdHelpPkg "github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/command/help"
-	cmdListPkg "github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/command/list"
-	cmdReadPkg "github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/command/read"
-	cmdUpdatePkg "github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/command/update"
-	userPkg "github.com/DenisAleksandrovichM/homework-1/internal/pkg/bot/core/user"
+	userPkg "github.com/DenisAleksandrovichM/apiservice/internal/api/core/user"
+	telegramPkg "github.com/DenisAleksandrovichM/apiservice/internal/api/telegram"
+	cmdAddPkg "github.com/DenisAleksandrovichM/apiservice/internal/api/telegram/command/add"
+	cmdDeletePkg "github.com/DenisAleksandrovichM/apiservice/internal/api/telegram/command/delete"
+	cmdHelpPkg "github.com/DenisAleksandrovichM/apiservice/internal/api/telegram/command/help"
+	cmdListPkg "github.com/DenisAleksandrovichM/apiservice/internal/api/telegram/command/list"
+	cmdReadPkg "github.com/DenisAleksandrovichM/apiservice/internal/api/telegram/command/read"
+	cmdUpdatePkg "github.com/DenisAleksandrovichM/apiservice/internal/api/telegram/command/update"
 	"github.com/pkg/errors"
 )
 
-func runBot(user userPkg.User, errSignals chan error) {
+func runTelegramBot(user userPkg.User, errSignals chan error) {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	var bot botPkg.Interface
+	var commander telegramPkg.Commander
 	{
-		bot = botPkg.MustNew()
+		commander = telegramPkg.MustNew()
 
 		commandAdd := cmdAddPkg.New(user)
-		bot.RegisterHandler(commandAdd)
+		commander.RegisterHandler(commandAdd)
 
 		commandDelete := cmdDeletePkg.New(user)
-		bot.RegisterHandler(commandDelete)
+		commander.RegisterHandler(commandDelete)
 
 		commandUpdate := cmdUpdatePkg.New(user)
-		bot.RegisterHandler(commandUpdate)
+		commander.RegisterHandler(commandUpdate)
 
 		commandList := cmdListPkg.New(user)
-		bot.RegisterHandler(commandList)
+		commander.RegisterHandler(commandList)
 
 		commandRead := cmdReadPkg.New(user)
-		bot.RegisterHandler(commandRead)
+		commander.RegisterHandler(commandRead)
 
 		commandHelp := cmdHelpPkg.New(map[string]string{
 			commandAdd.Name():    commandAdd.Description(),
@@ -44,8 +44,8 @@ func runBot(user userPkg.User, errSignals chan error) {
 			commandRead.Name():   commandRead.Description(),
 			commandList.Name():   commandList.Description(),
 		})
-		bot.RegisterHandler(commandHelp)
+		commander.RegisterHandler(commandHelp)
 	}
 
-	errSignals <- errors.Wrapf(bot.Run(ctx), "telegram client failure")
+	errSignals <- errors.Wrapf(commander.Run(ctx), "telegram client failure")
 }

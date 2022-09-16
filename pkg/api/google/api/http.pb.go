@@ -16,7 +16,7 @@
 // versions:
 // 	protoc-gen-go v1.28.0
 // 	protoc        (unknown)
-// source: google/api/http.proto
+// source: google/grpc/http.proto
 
 package annotations
 
@@ -35,7 +35,7 @@ const (
 )
 
 // Defines the HTTP configuration for an API service. It contains a list of
-// [HttpRule][google.api.HttpRule], each specifying the mapping of an RPC method
+// [HttpRule][google.grpc.HttpRule], each specifying the mapping of an RPC method
 // to one or more HTTP REST API methods.
 type Http struct {
 	state         protoimpl.MessageState
@@ -116,7 +116,7 @@ func (x *Http) GetFullyDecodeReservedExpansion() bool {
 // how different portions of the gRPC request message are mapped to the URL
 // path, URL query parameters, and HTTP request body. It also controls how the
 // gRPC response message is mapped to the HTTP response body. `HttpRule` is
-// typically specified as an `google.api.http` annotation on the gRPC method.
+// typically specified as an `google.grpc.http` annotation on the gRPC method.
 //
 // Each mapping specifies a URL path template and an HTTP method. The path
 // template may refer to one or more fields in the gRPC request message, as long
@@ -128,7 +128,7 @@ func (x *Http) GetFullyDecodeReservedExpansion() bool {
 //
 //     service Messaging {
 //       rpc GetMessage(GetMessageRequest) returns (Message) {
-//         option (google.api.http) = {
+//         option (google.grpc.http) = {
 //             get: "/v1/{name=messages/*}"
 //         };
 //       }
@@ -152,7 +152,7 @@ func (x *Http) GetFullyDecodeReservedExpansion() bool {
 //
 //     service Messaging {
 //       rpc GetMessage(GetMessageRequest) returns (Message) {
-//         option (google.api.http) = {
+//         option (google.grpc.http) = {
 //             get:"/v1/messages/{message_id}"
 //         };
 //       }
@@ -187,7 +187,7 @@ func (x *Http) GetFullyDecodeReservedExpansion() bool {
 //
 //     service Messaging {
 //       rpc UpdateMessage(UpdateMessageRequest) returns (Message) {
-//         option (google.api.http) = {
+//         option (google.grpc.http) = {
 //           patch: "/v1/messages/{message_id}"
 //           body: "message"
 //         };
@@ -214,7 +214,7 @@ func (x *Http) GetFullyDecodeReservedExpansion() bool {
 //
 //     service Messaging {
 //       rpc UpdateMessage(Message) returns (Message) {
-//         option (google.api.http) = {
+//         option (google.grpc.http) = {
 //           patch: "/v1/messages/{message_id}"
 //           body: "*"
 //         };
@@ -244,7 +244,7 @@ func (x *Http) GetFullyDecodeReservedExpansion() bool {
 //
 //     service Messaging {
 //       rpc GetMessage(GetMessageRequest) returns (Message) {
-//         option (google.api.http) = {
+//         option (google.grpc.http) = {
 //           get: "/v1/messages/{message_id}"
 //           additional_bindings {
 //             get: "/v1/users/{user_id}/messages/{message_id}"
@@ -270,15 +270,15 @@ func (x *Http) GetFullyDecodeReservedExpansion() bool {
 // 1. Leaf request fields (recursive expansion nested messages in the request
 //    message) are classified into three categories:
 //    - Fields referred by the path template. They are passed via the URL path.
-//    - Fields referred by the [HttpRule.body][google.api.HttpRule.body]. They are passed via the HTTP
+//    - Fields referred by the [HttpRule.body][google.grpc.HttpRule.body]. They are passed via the HTTP
 //      request body.
 //    - All other fields are passed via the URL query parameters, and the
 //      parameter name is the field path in the request message. A repeated
 //      field can be represented as multiple query parameters under the same
 //      name.
-//  2. If [HttpRule.body][google.api.HttpRule.body] is "*", there is no URL query parameter, all fields
+//  2. If [HttpRule.body][google.grpc.HttpRule.body] is "*", there is no URL query parameter, all fields
 //     are passed via URL path and HTTP request body.
-//  3. If [HttpRule.body][google.api.HttpRule.body] is omitted, there is no HTTP request body, all
+//  3. If [HttpRule.body][google.grpc.HttpRule.body] is omitted, there is no HTTP request body, all
 //     fields are passed via URL path and URL query parameters.
 //
 // ### Path template syntax
@@ -324,7 +324,7 @@ func (x *Http) GetFullyDecodeReservedExpansion() bool {
 //
 // gRPC API Service Configuration (service config) is a configuration language
 // for configuring a gRPC service to become a user-facing product. The
-// service config is simply the YAML representation of the `google.api.Service`
+// service config is simply the YAML representation of the `google.grpc.Service`
 // proto message.
 //
 // As an alternative to annotating your proto file, you can configure gRPC
@@ -377,7 +377,7 @@ type HttpRule struct {
 
 	// Selects a method to which this rule applies.
 	//
-	// Refer to [selector][google.api.DocumentationRule.selector] for syntax details.
+	// Refer to [selector][google.grpc.DocumentationRule.selector] for syntax details.
 	Selector string `protobuf:"bytes,1,opt,name=selector,proto3" json:"selector,omitempty"`
 	// Determines the URL pattern is matched by this rules. This pattern can be
 	// used with any of the {get|put|post|delete|patch} methods. A custom method
@@ -690,14 +690,14 @@ func file_google_api_http_proto_rawDescGZIP() []byte {
 
 var file_google_api_http_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_google_api_http_proto_goTypes = []interface{}{
-	(*Http)(nil),              // 0: google.api.Http
-	(*HttpRule)(nil),          // 1: google.api.HttpRule
-	(*CustomHttpPattern)(nil), // 2: google.api.CustomHttpPattern
+	(*Http)(nil),              // 0: google.grpc.Http
+	(*HttpRule)(nil),          // 1: google.grpc.HttpRule
+	(*CustomHttpPattern)(nil), // 2: google.grpc.CustomHttpPattern
 }
 var file_google_api_http_proto_depIdxs = []int32{
-	1, // 0: google.api.Http.rules:type_name -> google.api.HttpRule
-	2, // 1: google.api.HttpRule.custom:type_name -> google.api.CustomHttpPattern
-	1, // 2: google.api.HttpRule.additional_bindings:type_name -> google.api.HttpRule
+	1, // 0: google.grpc.Http.rules:type_name -> google.grpc.HttpRule
+	2, // 1: google.grpc.HttpRule.custom:type_name -> google.grpc.CustomHttpPattern
+	1, // 2: google.grpc.HttpRule.additional_bindings:type_name -> google.grpc.HttpRule
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name

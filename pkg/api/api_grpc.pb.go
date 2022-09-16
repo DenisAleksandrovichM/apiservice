@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             (unknown)
-// source: api.proto
+// source: grpc.proto
 
 package api
 
@@ -39,7 +39,7 @@ func NewAdminClient(cc grpc.ClientConnInterface) AdminClient {
 
 func (c *adminClient) UserCreate(ctx context.Context, in *UserCreateRequest, opts ...grpc.CallOption) (*UserCreateResponse, error) {
 	out := new(UserCreateResponse)
-	err := c.cc.Invoke(ctx, "/ozon.dev.mc2.api.Admin/UserCreate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api_Service.Admin/UserCreate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func (c *adminClient) UserCreate(ctx context.Context, in *UserCreateRequest, opt
 
 func (c *adminClient) UserList(ctx context.Context, in *UserListRequest, opts ...grpc.CallOption) (*UserListResponse, error) {
 	out := new(UserListResponse)
-	err := c.cc.Invoke(ctx, "/ozon.dev.mc2.api.Admin/UserList", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api_Service.Admin/UserList", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func (c *adminClient) UserList(ctx context.Context, in *UserListRequest, opts ..
 
 func (c *adminClient) UserRead(ctx context.Context, in *UserReadRequest, opts ...grpc.CallOption) (*UserReadResponse, error) {
 	out := new(UserReadResponse)
-	err := c.cc.Invoke(ctx, "/ozon.dev.mc2.api.Admin/UserRead", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api_Service.Admin/UserRead", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (c *adminClient) UserRead(ctx context.Context, in *UserReadRequest, opts ..
 
 func (c *adminClient) UserUpdate(ctx context.Context, in *UserUpdateRequest, opts ...grpc.CallOption) (*UserUpdateResponse, error) {
 	out := new(UserUpdateResponse)
-	err := c.cc.Invoke(ctx, "/ozon.dev.mc2.api.Admin/UserUpdate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api_Service.Admin/UserUpdate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +75,7 @@ func (c *adminClient) UserUpdate(ctx context.Context, in *UserUpdateRequest, opt
 
 func (c *adminClient) UserDelete(ctx context.Context, in *UserDeleteRequest, opts ...grpc.CallOption) (*UserDeleteResponse, error) {
 	out := new(UserDeleteResponse)
-	err := c.cc.Invoke(ctx, "/ozon.dev.mc2.api.Admin/UserDelete", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api_Service.Admin/UserDelete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -136,7 +136,7 @@ func _Admin_UserCreate_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ozon.dev.mc2.api.Admin/UserCreate",
+		FullMethod: "/api_Service.Admin/UserCreate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AdminServer).UserCreate(ctx, req.(*UserCreateRequest))
@@ -154,7 +154,7 @@ func _Admin_UserList_Handler(srv interface{}, ctx context.Context, dec func(inte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ozon.dev.mc2.api.Admin/UserList",
+		FullMethod: "/api_Service.Admin/UserList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AdminServer).UserList(ctx, req.(*UserListRequest))
@@ -172,7 +172,7 @@ func _Admin_UserRead_Handler(srv interface{}, ctx context.Context, dec func(inte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ozon.dev.mc2.api.Admin/UserRead",
+		FullMethod: "/api_Service.Admin/UserRead",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AdminServer).UserRead(ctx, req.(*UserReadRequest))
@@ -190,7 +190,7 @@ func _Admin_UserUpdate_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ozon.dev.mc2.api.Admin/UserUpdate",
+		FullMethod: "/api_Service.Admin/UserUpdate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AdminServer).UserUpdate(ctx, req.(*UserUpdateRequest))
@@ -208,7 +208,7 @@ func _Admin_UserDelete_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ozon.dev.mc2.api.Admin/UserDelete",
+		FullMethod: "/api_Service.Admin/UserDelete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AdminServer).UserDelete(ctx, req.(*UserDeleteRequest))
@@ -220,7 +220,7 @@ func _Admin_UserDelete_Handler(srv interface{}, ctx context.Context, dec func(in
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Admin_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "ozon.dev.mc2.api.Admin",
+	ServiceName: "api_Service.Admin",
 	HandlerType: (*AdminServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -245,5 +245,5 @@ var Admin_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "api.proto",
+	Metadata: "grpc.proto",
 }

@@ -1,7 +1,7 @@
 syntax = "proto3";
 
-package ozon.dev.mc2.api;
-option go_package = "gitlab.ozon.dev/DenisAleksandrovichM/homework-1/pkg/api;api";
+package api_Service;
+option go_package = "github.com/DenisAleksandrovichM/apiservice/pkg/grpc;grpc";
 
 import "google/api/annotations.proto";
 
