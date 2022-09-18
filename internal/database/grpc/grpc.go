@@ -2,28 +2,25 @@ package grpc
 
 import (
 	"context"
-	userPkg "github.com/DenisAleksandrovichM/apiservice/internal/api/core/user"
-	"github.com/DenisAleksandrovichM/apiservice/internal/api/core/user/validate"
+	userPkg "github.com/DenisAleksandrovichM/apiservice/internal/database/core/user"
 	pb "github.com/DenisAleksandrovichM/apiservice/pkg/api"
 	"github.com/DenisAleksandrovichM/apiservice/pkg/counter/errorsCounter"
 	"github.com/DenisAleksandrovichM/apiservice/pkg/counter/requestsCounter"
 	"github.com/DenisAleksandrovichM/apiservice/pkg/counter/responsesCounter"
 	"github.com/DenisAleksandrovichM/apiservice/pkg/models"
-	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
-
-type implementation struct {
-	pb.UnimplementedAdminServer
-	user userPkg.User
-}
 
 func New(user userPkg.User) *implementation {
 	return &implementation{
 		user: user,
 	}
+}
+
+type implementation struct {
+	pb.UnimplementedAdminServer
+	user userPkg.User
 }
 
 func (i *implementation) UserCreate(ctx context.Context, in *pb.UserCreateRequest) (*pb.UserCreateResponse, error) {
@@ -36,12 +33,9 @@ func (i *implementation) UserCreate(ctx context.Context, in *pb.UserCreateReques
 		Height:    uint(in.GetHeight()),
 		Age:       uint(in.GetAge()),
 	})
+
 	if err != nil {
 		errorsCounter.Inc()
-		log.Error(err)
-		if errors.Is(err, validate.ErrValidation) {
-			return nil, status.Error(codes.InvalidArgument, err.Error())
-		}
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
@@ -52,8 +46,7 @@ func (i *implementation) UserCreate(ctx context.Context, in *pb.UserCreateReques
 		LastName:  user.LastName,
 		Weight:    float64(user.Weight),
 		Height:    uint32(user.Height),
-		Age:       uint32(user.Age),
-	}, nil
+		Age:       uint32(user.Age)}, nil
 }
 
 func (i *implementation) UserList(ctx context.Context, in *pb.UserListRequest) (*pb.UserListResponse, error) {
@@ -72,7 +65,6 @@ func (i *implementation) UserList(ctx context.Context, in *pb.UserListRequest) (
 	users, err := i.user.List(ctx, queryParams)
 	if err != nil {
 		errorsCounter.Inc()
-		log.Error(err)
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 	result := make([]*pb.UserListResponse_User, 0, len(users))
@@ -104,11 +96,7 @@ func (i *implementation) UserUpdate(ctx context.Context, in *pb.UserUpdateReques
 		Age:       uint(in.GetAge()),
 	})
 	if err != nil {
-		log.Error(err)
 		errorsCounter.Inc()
-		if errors.Is(err, validate.ErrValidation) {
-			return nil, status.Error(codes.InvalidArgument, err.Error())
-		}
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
@@ -119,8 +107,7 @@ func (i *implementation) UserUpdate(ctx context.Context, in *pb.UserUpdateReques
 		LastName:  user.LastName,
 		Weight:    float64(user.Weight),
 		Height:    uint32(user.Height),
-		Age:       uint32(user.Age),
-	}, nil
+		Age:       uint32(user.Age)}, nil
 }
 
 func (i *implementation) UserDelete(ctx context.Context, in *pb.UserDeleteRequest) (*pb.UserDeleteResponse, error) {
@@ -128,10 +115,6 @@ func (i *implementation) UserDelete(ctx context.Context, in *pb.UserDeleteReques
 	err := i.user.Delete(ctx, in.GetLogin())
 	if err != nil {
 		errorsCounter.Inc()
-		log.Error(err)
-		if errors.Is(err, validate.ErrValidation) {
-			return nil, status.Error(codes.InvalidArgument, err.Error())
-		}
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
@@ -144,10 +127,6 @@ func (i *implementation) UserRead(ctx context.Context, in *pb.UserReadRequest) (
 	user, err := i.user.Read(ctx, in.GetLogin())
 	if err != nil {
 		errorsCounter.Inc()
-		log.Error(err)
-		if errors.Is(err, validate.ErrValidation) {
-			return nil, status.Error(codes.InvalidArgument, err.Error())
-		}
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 

@@ -1,8 +1,7 @@
-package main
+package server
 
 import (
 	"context"
-	"github.com/DenisAleksandrovichM/apiservice/internal/api/config"
 	pb "github.com/DenisAleksandrovichM/apiservice/pkg/api"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/pkg/errors"
@@ -11,16 +10,16 @@ import (
 	"net/http"
 )
 
-func runHttpServer(errSignals chan error) {
+func RunHTTPServer(endpoint, address string, errSignals chan error) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
 	mux := runtime.NewServeMux()
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-	if err := pb.RegisterAdminHandlerFromEndpoint(ctx, mux, config.HTTPEndpoint, opts); err != nil {
+	if err := pb.RegisterAdminHandlerFromEndpoint(ctx, mux, endpoint, opts); err != nil {
 		errSignals <- errors.Wrapf(err, "failed to register HTTP handler")
 		return
 	}
 
-	errSignals <- errors.Wrapf(http.ListenAndServe(config.HTTPAddress, mux), "http server failure")
+	errSignals <- errors.Wrapf(http.ListenAndServe(address, mux), "http server failure")
 }

@@ -1,7 +1,6 @@
-package main
+package server
 
 import (
-	"github.com/DenisAleksandrovichM/apiservice/internal/api/config"
 	userPkg "github.com/DenisAleksandrovichM/apiservice/internal/api/core/user"
 	apiPkg "github.com/DenisAleksandrovichM/apiservice/internal/api/grpc"
 	pb "github.com/DenisAleksandrovichM/apiservice/pkg/api"
@@ -10,10 +9,10 @@ import (
 	"net"
 )
 
-func runGRPCServer(user userPkg.User, errSignals chan error) {
-	listener, err := net.Listen(config.GRPCNetwork, config.GRPCAddress)
+func RunGRPCServer(user userPkg.User, network, address string, errSignals chan error) {
+	listener, err := net.Listen(network, address)
 	if err != nil {
-		errSignals <- errors.Wrapf(err, "failed to create a %s listener at %s", config.GRPCNetwork, config.GRPCAddress)
+		errSignals <- errors.Wrapf(err, "failed to create a %s listener at %s", network, address)
 		return
 	}
 
